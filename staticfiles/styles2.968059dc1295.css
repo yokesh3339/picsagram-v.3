@@ -1,0 +1,17 @@
+.profile-head {
+    transform: translateY(5rem)
+}
+
+.cover {
+    background-image: url(https://images.unsplash.com/photo-1530305408560-82d13781b33a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80);
+    background-size: cover;
+    background-repeat: no-repeat
+}
+body{
+    background: url("backkk.a8e1f5ddbe32.jpg") repeat center center fixed;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    margin: 0%;
+    
+}

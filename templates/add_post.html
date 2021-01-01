@@ -1,0 +1,150 @@
+{% for i in obj %}
+
+  <nav class="navs">  
+
+    <section>
+      <h1 class="h1">
+        {% if user.is_authenticated %}
+        <a href="{% url 'profiles' i.users.pk %}" title="my_profile">
+          {% if i.follow.status1 %}
+          <img src={{i.follow.profile.url}} alt="pics"
+            style="border: 2px solid #2ecc71;height:50px;width:50px;border-radius: 50%;margin-right:0px;margin-left:0px"></a>
+        {% else %}
+        <img src={{i.follow.profile.url}} alt="pics"
+          style="border: 2px solid #f33900;height:50px;width:50px;border-radius: 50%;margin-right:0px;">
+        {% endif %}
+        {% else %}
+        <img src={{i.follow.profile.url}} alt="pics"
+          style="border: 2px solid #f33900;height:50px;width:50px;border-radius: 50%;margin-right:0px;">
+        {% endif %}
+        <a href='{{ i.get_absolute_url }}' title='my_posts' class="btn btn-link font-italic shadow-none"
+          style="margin-left:0px;margin-right:0px;color:currentcolor;text-decoration:none;">{{i.username|title}}</a>
+        {% if not i.users == request.user and user.is_authenticated %}
+        <div class="dropdown">
+          <button type="button" class="btn btn-link shadow-none" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" style="float:right;margin-right:1.5em;">
+            <svg width="1.25em" height="1.25em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+            </svg>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% if not i.users in request.user.profile_user.following_users.all %}
+            <a type="button" href="{% url 'follows' i.pk %}" class='dropdown-item follow btn btn-info active'
+              id='follow{{i.users}}' role="button" data-catid='{{ i.users }}'>Follow</a>
+            {% else %}
+            <a type="button" href="{% url 'follows' i.pk %}" class='dropdown-item follow btn btn-danger active'
+              id='follow{{i.users}}' role="button" data-catid='{{ i.users }}'>Unfollow</a>
+            <a href="{% url 'chat:room' i.users.username %}" class="dropdown-item" type="button">Chat</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </h1>
+      <!--
+<h1>NAME:{{i.firstname}}{{i.lastname}}</h1>-->
+    </section>
+    <a href="{% url 'specific-view' i.pk %}">
+    <img src='{{i.profile.url}}' alt="no img" class="rounded shadow-lg">
+    </a>
+    <section class="font-italic">
+      <h1 style="text-transform: capitalize;" class="hashtag">
+        {{i.description|title}}
+      </h1>
+      <h1 class="count" id="counts{{i.pk}}">LIKES:{{i.likes_users.count }}</h1>
+      <div>
+        {% if user.is_authenticated %}
+        <div class="form1">
+          {% if not request.user in i.likedusers %}
+          <a type='button' href="{% url 'liked' i.pk %}" id='likes{{i.pk}}' class='likebutton' role='button'
+            data-catid='{{ i.pk }}' style="margin:1em 1.25em 1em 1.25em">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-suit-heart" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M8 6.236l.894-1.789c.222-.443.607-1.08 1.152-1.595C10.582 2.345 11.224 2 12 2c1.676 0 3 1.326 3 2.92 0 1.211-.554 2.066-1.868 3.37-.337.334-.721.695-1.146 1.093C10.878 10.423 9.5 11.717 8 13.447c-1.5-1.73-2.878-3.024-3.986-4.064-.425-.398-.81-.76-1.146-1.093C1.554 6.986 1 6.131 1 4.92 1 3.326 2.324 2 4 2c.776 0 1.418.345 1.954.852.545.515.93 1.152 1.152 1.595L8 6.236zm.392 8.292a.513.513 0 0 1-.784 0c-1.601-1.902-3.05-3.262-4.243-4.381C1.3 8.208 0 6.989 0 4.92 0 2.755 1.79 1 4 1c1.6 0 2.719 1.05 3.404 2.008.26.365.458.716.596.992a7.55 7.55 0 0 1 .596-.992C9.281 2.049 10.4 1 12 1c2.21 0 4 1.755 4 3.92 0 2.069-1.3 3.288-3.365 5.227-1.193 1.12-2.642 2.48-4.243 4.38z" />
+            </svg>
+          </a>
+          {% else %}
+          <a type='button' href="{% url 'liked' i.pk %}" id='likes{{i.pk}}' class='likebutton' role='button'
+            data-catid='{{ i.pk }}' style="margin:1em 1.25em 1em 1.25em">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-suit-heart-fill" fill="red"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1z" />
+            </svg>
+          </a>
+          {% endif %}
+<!--           <a href="{{ i.profile.url }}" class="" style="margin:1em 1.25em 1em 1.25em" download="{{ i.users.username }}">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-download" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+              <path fill-rule="evenodd"
+                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+            </svg>
+          </a> -->
+          <!-- Button trigger modal -->
+          <a type="button" class="createcmt" data-catid="{{i.pk}}" data-toggle="modal" data-target="#exampleModal{{i.pk}}"
+            style="margin:1em 1.25em 1em 1.25em">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-chat-left-dots-fill" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793V2zm5 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+            </svg>
+          </a>
+
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal{{i.pk}}" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel{{i.pk}}" style="color: black;">Add Comment</h5>
+                  <button type="button" class="close onclose" data-dismiss="modal" aria-label="Close" data-catid='{{i.pk}}'>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="scroll{{i.pk}}">
+                  <div class="card text-white bg-dark" style="max-width: 100%;" id="comment{{i.pk}}">
+                    <!-- <div class="card-header">Comments</div> -->
+
+                  </div>
+                </div>
+                <form id='form{{i.pk}}' class="commenting" data-catid='{{i.pk}}'>
+                  <div class="form-group">
+                    <label for="message-text" class="col-form-label" style="color: black;">Comment Here:</label>
+                    <textarea class="form-control" id="message-text{{i.pk}}" name="comments_by_user"></textarea>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary onclose" data-dismiss="modal" data-catid='{{i.pk}}'>Close</button>
+                    <a role="button" class="btn btn-primary addcmt" id="addcmt" data-catid="{{i.pk}}">Add</a>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+          {% if request.user == i.users %}
+          <a href="{% url 'update-data' i.pk %}" class='' style="margin:1em 1.25em 1em 1.25em">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+            </svg>
+          </a>
+          <a href="{% url 'delete-view' i.pk %}" class="" style="margin:1em 1.25em 1em 1.25em">
+            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="white"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z" />
+            </svg>
+          </a>
+          {% endif %}
+          {% endif %}
+        </div>
+    </section>
+  </nav>
+  {% endfor %}

@@ -1,0 +1,121 @@
+{% extends 'base1.html' %}
+{% block content %}
+<div class="wrapper">
+    <div class="main">
+        <div class="px-2 scroll container-fluid" id="chat-log">
+            <!--<div class="d-flex align-items-center">
+                <div class="text-left pr-1"><img src="{{ chat_user.profile_user.profile.url  }}" width="30" height="30" class="img1" /></div>
+                <div class="pr-2 pl-1"> <span class="name">{{ chat_user.username }}</span>
+                    <p class="msg">Hello there!!</p>
+                </div>
+            </div>-->
+           <!-- <div class="d-flex align-items-center text-right justify-content-end ">
+                <div class="pr-2"> <span class="name">{{ request.user.username  }}</span>
+                    <p class="msg">Hello User!!!!</p>
+                </div>
+                <div><img src="{{ request.user.profile_user.profile.url }}" width="30" height="30" class="img1" /></div>
+            </div>-->
+        </div>
+        <nav class="navbar bg-white navbar-expand-sm d-flex justify-content-between fixed-bottom"> <input type="text" name="text" class="form-control" placeholder="Type a message..." id='chat-message-input'>
+            <div class="icondiv d-flex justify-content-end align-content-center text-center ml-2"> <i class="fa fa-paperclip icon1"></i> <i class="fa fa-arrow-circle-right icon2" id='chat-message-submit'></i> </div>
+        </nav>
+    </div>
+</div>
+<script src="static/reconnecting-websocket.js"></script>
+<script>
+	var roomName = "{{ room_name }}";
+	var username = "{{ username }}";
+	console.log(roomName);
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+	);
+	
+
+	chatSocket.onopen=function(e){
+		fetchMessage();
+	}
+
+    chatSocket.onmessage = function(e) {
+		var data=JSON.parse(e.data);
+		console.log(data['command']);
+		if (data['command']==='messages'){
+			for (let i=0;i<data['messages'].length;i++){
+				createMessage(data['messages'][i]);
+			}
+		} else if (data['command'] === 'new_message'){
+			createMessage(data['message'])
+		}
+
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+			'command':'new_message',
+			'from':username,
+			'to':roomName
+        }));
+        messageInputDom.value = '';
+	};
+	function fetchMessage(data){
+		chatSocket.send(JSON.stringify({'command':'fetch_messages','to':roomName,'from':username}));
+	}
+
+	function createMessage(data){
+		var author=data['author'];
+        var div1=document.createElement('div');
+        var div2=document.createElement('div');
+        var div3=document.createElement('div');
+		var imgTab=document.createElement('img');
+        var pTag=document.createElement('p');
+        var span=document.createElement('span');
+        span.className="name";
+		pTag.textContent=data.content;
+		imgTab.style="width:30px;height:30px;border-radius:50%";
+
+		if (author === username){
+            div1.className="d-flex align-items-center text-right justify-content-end ";
+            div2.className="pr-2";
+            pTag.className="msg";
+            imgTab.src='{{ sender.profile.url }}';
+            span.textContent=username;
+            div2.appendChild(span);
+            div2.appendChild(pTag);
+            div3.appendChild(imgTab);
+            div1.appendChild(div2);
+            div1.appendChild(div3);
+
+		}
+		else{
+            div1.className="d-flex align-items-center";
+            div2.className="text-left pr-1";
+            div3.className="pr-2 pl-1";
+            pTag.className="msg";
+            imgTab.src='{{ reciver.profile.url }}';
+            span.textContent=author;
+            div2.appendChild(imgTab);
+            div3.appendChild(span);
+            div3.appendChild(pTag);
+            div1.appendChild(div2);
+            div1.appendChild(div3);
+		}
+		document.querySelector('#chat-log').appendChild(div1);
+	}
+</script>
+{% endblock %}

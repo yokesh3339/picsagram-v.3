@@ -1,0 +1,85 @@
+body{
+    background: url("backkk.a8e1f5ddbe32.jpg") repeat center center fixed;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    margin: 0%;
+    
+}
+.wraping{
+    width: 100%;
+    position: fixed;
+    top: 0;
+
+}
+
+.h1,h1{
+    font-size: 1.25rem;
+    margin: 0px;
+    margin-left: 17px;
+}
+.container{
+    margin-top: 5em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.als{
+    margin-left: auto;
+}
+
+.navs{
+    
+    border: 5px solid rgb(20, 19, 20);
+    border-width: 0.8rem;
+    border-radius: 2em;
+    max-width: 500px;
+    margin: 0.5em;
+    width: 100%;
+}
+
+
+img{
+    width: 400px;
+    height:400px;
+    margin: 10px;
+    float: center;
+    cursor: pointer;
+    transition: all 0.5s;
+    width: 90%;
+}
+
+
+
+.btn{
+    cursor: pointer;
+    border-radius: 1em;
+    font-size: 1em;
+}
+img:hover,.btn:hover{
+    transform: scale(1.05);
+
+}
+a{
+    margin: 0.5em 0.5em 0.5em 0.5em;
+}
+div{
+    display: inline;
+}
+.ls:link{
+    color: rgb(53, 45, 45);
+    text-decoration: underline;
+}
+.ls:visited{
+    color: black;
+}
+.ls:hover{
+    color: red;
+}
+.ls:active{
+    color: brown;
+}
+.form1{
+    margin-bottom: 1em;
+    margin-left: 1em;
+}

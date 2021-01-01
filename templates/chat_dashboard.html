@@ -1,0 +1,30 @@
+{% extends 'base1.html' %}
+{% block content %}
+<div>
+<div class="dummy" style="margin-top:5rem;">
+    <div class="card">
+        <div class="top">
+            <h4 class="mt-2">Inbox</h4>
+        </div>
+        <div class="bottom">
+            {% for i in followings %}
+            <a href="{% url 'chat:room' i.profile_user.user.username %}" style="text-decoration:none;color:black;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-row align-items-center">
+                    <div class="image"> <img src="{{ i.profile_user.profile.url }}" width="50px" height="50px"
+                            style="border-radius: 50%;"></div>
+                    <div class="d-flex flex-column line-height ml-2"> <span
+                            class="font-weight-bold">{{i.username}}</span> <span>Say Hello?</span> <span
+                            class="d-flex flex-row align-items-center l-now"><small class="live"></small></span>
+                    </div>
+                </div> <span class="dots"> </span>
+            </div>
+            <hr>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

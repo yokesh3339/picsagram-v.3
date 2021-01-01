@@ -1,0 +1,259 @@
+{% load static %}
+{% load cloudinary %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta name="viewport" content="width=device-width initial-scale=1.0" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <title>Welcome {{ request.user }}</title>
+  <link rel="icon" href="/static/icon.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static '/styles1.css' %}">
+  <script>
+    function hashtag(val) {
+      var string = val.toLowerCase();
+      string = string.replace(/#(\S*)/g, '<a href="../search/$1" style="margin:0px;text-decoration:none;">#$1</a>');
+      string = string.replace(/@(\S*)/g, '<a href="../profat/$1" style="margin:0px;text-decoration:none;">@$1</a>');
+      return string;
+    }
+  </script>
+</head>
+
+<body>
+
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark shadow-lg" id="nav">
+    {% if user.is_authenticated %}
+    <a class="navbar-brand" href="{% url 'new-dis' %}">
+      <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-person-square" fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+          d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+        <path fill-rule="evenodd" d="M2 15v-1c0-1 1-4 6-4s6 3 6 4v1H2zm6-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+      </svg>
+      PicsaGram-{{ request.user }}</a>
+    {% else %}
+    <a class="navbar-brand" href="#">
+      <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-person-square" fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+          d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+        <path fill-rule="evenodd" d="M2 15v-1c0-1 1-4 6-4s6 3 6 4v1H2zm6-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+      </svg>
+      PicsaGram-<span class="badge badge-light">{{obj|length}}</span></a>
+    {% endif %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'data' %}">Discover <span class="sr-only">(current)</span></a>
+        </li>
+        {% if not user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'sign-up' %}">Sign Up</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+        {% else %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'followsdata' %}">MyHome<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'store' %}">Add Post</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        <li class="nav-item" style="margin: 0.5em;">
+          <button class="nav-link btn btn-link shadow-none" data-toggle="modal" data-target="#exampleModal">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z" />
+              <path fill-rule="evenodd"
+                d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+            </svg>
+          </button>
+        </li>
+        {% endif %}
+      </ul>
+      {% if user.is_authenticated %}
+      <div class="btn-group">
+        <a class="" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+          <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person-circle" fill="white"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z" />
+            <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+            <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" />
+          </svg>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg-right">
+          <a href="{% url 'profiles' request.user.pk %}" class="dropdown-item" type="button">My profile</a>
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'c_board' %}" class="dropdown-item" type="button">Chat</a>
+          <a href="{% url 'logout' %}" class="dropdown-item" type="button">Logout</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Search</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form>
+          <div class="form-group">
+            <!-- <label for="search" class="col-form-label" style="color: black;">Search</label> -->
+            <textarea class="form-control" id="search" style="background-color: black;color:white;"
+              placeholder="Search here.."></textarea>
+          </div>
+        </form>
+        <div class="modal-body">
+          <div class="card text-white bg-dark mb-3" style="max-width: 100%;" id="user">
+            <div class="card-header">List</div>
+            <p class="card-text d-inline">
+              &nbsp</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+  {% block content %}
+  {% endblock %}
+  {% block js %}
+  <script src="{% static 'main1.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener("pageshow", function (event) {
+      var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+          window.performance.navigation.type === 2);
+      if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+      }
+    });
+
+  </script>
+  <script>
+    $(function () {
+      /* this is only for demonstration purpose */
+
+      c = 1,
+        console.log(window.location.href);
+      scroll_enabled = true;
+
+      function load_ajax() {
+        c++;
+        $.ajax({
+          url: "get_follows_data",
+          type: 'get',
+          data: {
+            'path': window.location.pathname
+
+          },
+          success: function (names) {
+            if (!(names === "")) {
+              console.log("cmt_fetch", c);
+              /*var navv=document.createElement("nav");
+              navv.className="navs";
+              navv.innerHTML=names;*/
+              document.getElementById("len").innerHTML += names;
+              cc = 0
+
+              tag = document.getElementsByClassName("hashtag");
+
+              for (let i = 0; i < tag.length; i++) {
+                console.log(i);
+                tag[i].innerHTML = hashtag(tag[i].innerText);
+              }
+              console.log("run", c);
+              $('.navv').removeClass('navv');
+              $('.hashtag').removeClass('hashtag');
+
+            }
+            else {
+        console.log("no data");
+      }
+    },
+      error: function () {
+        alert("Server not responding,Try again!!!!")
+      }
+
+        });
+
+
+
+  /* call ajax here... on success enable scroll 
+  var navv=document.createElement("nav");
+  navv.className="navs";
+      
+  var t = '<section><h1 class="h1"><a href="/profiles/25" title="my_profile"><img src="http://res.cloudinary.com/yokesh234/image/upload/v1605234770/tm2bs3lf3lebx0yj0bny.jpg" alt="pics" style="border: 2px solid #f33900;height:50px;width:50px;border-radius: 50%;margin-right:0px;"></a ><a href="/listing/mi" title="my_posts" class="btn btn-link font-italic shadow-none" style="margin-left:0px;margin-right:0px;color:currentcolor;text-decoration:none;">Mi</a><div class="dropdown"><button type="button" class="btn btn-link shadow-none" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float:right;margin-right:1.5em;"><svg width="1.25em" height="1.25em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="white" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path></svg></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a type="button" href="/follows/22" class="dropdown-item follow btn btn-danger active" id="followmi" role="button" data-catid="mi">Unfollow</a><a href="/chat/mi/" class="dropdown-item" type="button">Chat</a></div></div></h1 ></section ><a href="/22/"><img src="http://res.cloudinary.com/yokesh234/image/upload/v1606648486/ecz5hbajlocv9tmxgnn3.png" alt="no img" class="rounded shadow-lg"></a><section class="font-italic"><h1 style="text-transform: capitalize;">Mumbai Indians #Mi #Mumbai #Rohit mumbai indians <a href="../search/mi" style="margin:0px;text-decoration:none;">#mi</a><a href="../search/mumbai" style="margin:0px;text-decoration:none;">#mumbai</a> <a href="../search/rohit"style="margin:0px;text-decoration:none;">#rohit</a></h1></section>';
+  navv.innerHTML=t;
+
+  tt.append(navv);*/
+
+
+  /*again enable loading on scroll... */
+
+  }
+
+
+    $(window).bind('scroll', function () {
+      if (scroll_enabled) {
+
+        /* if 90% scrolled */
+        if ($(window).scrollTop() >= ($('.container').offset().top + $('.container').outerHeight() - window.innerHeight) * 0.9) {
+
+          /* load ajax content */
+          scroll_enabled = false;
+          load_ajax();
+          setInterval(set_val, 1000);
+          function set_val() {
+            scroll_enabled = true;
+          }
+
+        }
+
+      }
+
+    });
+
+  });
+  </script>
+  <script>
+    $("#searchh").autocomplete({
+      appendTo: "#nav",
+      source: "{% url 'autocomplete' %}"
+    });
+
+  </script>
+  {% endblock %}
+</body>
+
+</html>

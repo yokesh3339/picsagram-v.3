@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav class="container">
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+{{ forms.as_p }}
+<input type="submit" class='btn btn-dark' value="Login"/>
+<a href="../" class='btn btn-dark'>Cancel</a>
+</form>
+</nav>
+<div>
+<center>
+<ul>
+{% for m in messages %}
+{% if m %}
+<li>
+{{ m }}
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+</center>
+</div>
+{% endblock %}

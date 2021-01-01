@@ -1,0 +1,86 @@
+{% extends 'base1.html' %}
+{% block content %}
+<div class="row py-5 px-1" style="margin:1em;">
+    <div class="col-md-5 mx-auto">
+        <!-- Profile widget -->
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 cover">
+                <div class="media align-items-end profile-head">
+                    <div class="profile mr-3"><img src="{{ob.profile_user.profile.url}}" alt="..." width="130"
+                            class="rounded mb-2 img-thumbnail"><a href="#" class=""></a></div>
+                    <div class="media-body mb-5 text-white">
+                        <h4 class="mt-0 mb-0">{{ob.username}}</h4>
+                        <p class="small mb-4">{{ob.get_full_name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light p-4 d-flex justify-content-end text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ob.post_user.count}}</h5><small class="text-muted">Photos</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <div class="dropleft" id="followers">
+                            <h5 class="font-weight-bold mb-0 d-block">{{ob.profile_user.followers_users.count}}</h5>
+                            <small class="text-muted followedprofcount" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                Followers
+                            </small>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id='followedprof'>
+                                {% for i in ob.profile_user.followers_users.all %}
+                                <a href="{% url 'listing' i %}" class="dropdown-item alert alert-primary"
+                                    id='followers{{i}}' data-catid='{{i}}'>{{i}}</a>
+                                <div class="dropdown-divider"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ob.profile_user.followed_users.count}}</h5>
+                        <div class="dropleft" id='followings'>
+                            <small class="text-muted followedprofcount" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                Followings
+                            </small>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id='followedprof'>
+                                {% for i in ob.profile_user.followed_users.all %}
+                                <a href="{% url 'listing' i %}" class="dropdown-item alert alert-primary"
+                                    id='followers{{i}}' data-catid='{{i}}'>{{i}}</a>
+                                <div class="dropdown-divider"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="px-4 py-3">
+                <h5 class="mb-0">About</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <p class="font-italic mb-0">
+                        <script>
+                            document.write(hashtag("{{ob.profile_user.description}}"));
+                        </script>
+                    </p>
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Recent photos</h5>
+                </div>
+                <div class="row">
+                    {% for i in ob.post_user.all %}
+                    <div class="col-lg-6 mb-2 pr-lg-1">
+                        <a href="{% url 'specific-view' i.pk %}">
+                            <img src="{{ i.profile.url }}" alt="" class="img-fluid rounded shadow-sm">
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

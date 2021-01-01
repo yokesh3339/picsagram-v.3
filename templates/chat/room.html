@@ -1,0 +1,226 @@
+{% load static %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!DOCTYPE html>
+<html class=''>
+
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet'
+		type='text/css'>
+
+	<script src="https://use.typekit.net/hoy3lrg.js"></script>
+	<script>try { Typekit.load({ async: true }); } catch (e) { }</script>
+	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+	<link rel='stylesheet prefetch'
+		href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+	<link rel="stylesheet" href="{% static 'style.css' %}" />
+</head>
+
+<body>
+	<!-- 
+
+A concept for a chat interface. 
+
+Try writing a new message! :)
+
+
+Follow me here:
+Twitter: https://twitter.com/thatguyemil
+Codepen: https://codepen.io/emilcarlsson/
+Website: http://emilcarlsson.se/
+
+-->
+
+	<div id="frame">
+		<div id="sidepanel">
+			<div id="profile">
+				<div class="wrap">
+					<img id="profile-img" src="{{ sender.profile.url }}" class="online" alt=""
+						style="width:50px;height:50px;border-radius:50%" />
+					<p>{{ username }}</p>
+					<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+					<div id="status-options">
+						<ul>
+							<li id="status-online" class="active"><span class="status-circle"></span>
+								<p>Online</p>
+							</li>
+							<li id="status-away"><span class="status-circle"></span>
+								<p>Away</p>
+							</li>
+							<li id="status-busy"><span class="status-circle"></span>
+								<p>Busy</p>
+							</li>
+							<li id="status-offline"><span class="status-circle"></span>
+								<p>Offline</p>
+							</li>
+						</ul>
+					</div>
+					<div id="expanded">
+						<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+						<input name="twitter" type="text" value="mikeross" />
+						<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+						<input name="twitter" type="text" value="ross81" />
+						<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+						<input name="twitter" type="text" value="mike.ross" />
+					</div>
+				</div>
+			</div>
+			<div id="search">
+				<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+				<input type="text" placeholder="Search contacts..." />
+			</div>
+			<div id="contacts">
+				<ul>
+					{% for i in followings %}
+					<a href="{% url 'chat:room' i.profile_user.user.username %}"
+						style="text-decoration:none;color:#F5F5F5;">
+						<li class="contact">
+							<div class="wrap">
+								{% if i.profile_user.status %}
+									<span class="contact-status online"></span>
+								{% else %}
+								<span class="contact-status offline"></span>
+								{% endif %}
+								<img src="{{ i.profile_user.profile.url }}" alt=""
+									style="width:50px;height:50px;border-radius:50%" />
+								<div class="meta">
+									<p class="name">{{ i.username }}</p>
+									<p class="preview">Chat!!</p>
+								</div>
+							</div>
+						</li>
+					</a>
+					{% endfor %}
+				</ul>
+			</div>
+			<div id="bottom-bar">
+				<button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span><a
+							href="{% url 'data' %}" style="text-decoration:none;color:#F5F5F5;">Add
+							Friends</span></a></button>
+				<button id="settings"><span><a href="{% url 'new-dis' %}" style="text-decoration:none;color:#F5F5F5;">
+							<svg width="0.87em" height="0.87em" viewBox="0 0 16 16" class="bi bi-house-door-fill"
+								fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M6.5 10.995V14.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5V11c0-.25-.25-.5-.5-.5H7c-.25 0-.5.25-.5.495z" />
+								<path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+							</svg>
+							Home</a></span></button>
+			</div>
+		</div>
+		<div class="content">
+			<div class="contact-profile">
+				<img src="{{ reciver.profile.url }}" alt="" style="width:40px;height:40px;border-radius:50%" />
+				<p>{{ reciver.user.username }}</p>
+				<div class="social-media">
+					<i class="fa fa-facebook" aria-hidden="true"></i>
+					<i class="fa fa-twitter" aria-hidden="true"></i>
+					<i class="fa fa-instagram" aria-hidden="true"></i>
+				</div>
+			</div>
+			<div class="messages container-fluid" id="Box">
+				<ul id="chat-log">
+
+				</ul>
+			</div>
+			<div class="message-input">
+				<div class="wrap">
+					<input id="chat-message-input" type="text" placeholder="Write your message..." required />
+					<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+					<button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane"
+							aria-hidden="true"></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="{% static 'main.js' %} "></script>
+	<script src="{% static 'reconnecting-websocket.js' %} "></script>
+	<script>
+		var roomName = "{{ room_name }}";
+		var username = "{{ username }}";
+		console.log(window.location.host);
+		const chatSocket = new ReconnectingWebSocket(
+			'ws://'
+			+ window.location.host
+			+ '/ws/chat/'
+			+ roomName
+			+ '/'
+		);
+
+
+		chatSocket.onopen = function (e) {
+			fetchMessage();
+		}
+
+		chatSocket.onmessage = function (e) {
+			var data = JSON.parse(e.data);
+			console.log(data['command']);
+			if (data['command'] === 'messages') {
+				for (let i = 0; i < data['messages'].length; i++) {
+					createMessage(data['messages'][i]);
+				}
+			} else if (data['command'] === 'new_message') {
+				createMessage(data['message'])
+			}
+
+		};
+
+		chatSocket.onclose = function (e) {
+			console.error('Chat socket closed unexpectedly');
+		};
+
+		document.querySelector('#chat-message-input').onkeyup = function (e) {
+			if (e.keyCode === 13) {  // enter, return
+				document.querySelector('#chat-message-submit').click();
+			}
+		};
+
+		document.querySelector('#chat-message-submit').onclick = function (e) {
+			const messageInputDom = document.querySelector('#chat-message-input');
+			const message = messageInputDom.value;
+			chatSocket.send(JSON.stringify({
+				'message': message,
+				'command': 'new_message',
+				'from': username,
+				'to': roomName
+			}));
+			messageInputDom.value = '';
+		};
+		function fetchMessage(data) {
+			chatSocket.send(JSON.stringify({ 'command': 'fetch_messages', 'to': roomName, 'from': username }));
+		}
+
+		function createMessage(data) {
+			var author = data['author'];
+			var msgListTag = document.createElement('li');
+			var imgTab = document.createElement('img');
+			var pTag = document.createElement('p');
+			pTag.className="";
+			pTag.textContent = data.content;
+			imgTab.style = "width:35px;height:35px;border-radius:50%";
+
+			if (author === username) {
+				msgListTag.className = 'replies';
+				imgTab.src = "{{ sender.profile.url }}";
+			}
+			else {
+				msgListTag.className = 'sent';
+				imgTab.src = "{{ reciver.profile.url }}";
+			}
+			msgListTag.appendChild(imgTab);
+			msgListTag.appendChild(pTag);
+			document.querySelector('#chat-log').appendChild(msgListTag);
+			
+		}
+		$(".messages").animate({ scrollTop: $(document).height() }, "fast");
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+{% for i in obj %}
+<div class="dis">
+  <a href="{% url 'suggest_discover' i.pk %}">  <img src={{i.profile.url}} alt="no_img" width="450px" height="450px" class="img-dis rounded shadow-lg"> </a>
+
+<!--<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="file" name="image"/>
+<input type="submit" class='btn btn-dark' value="Post"/>
+<a href="../" class='btn btn-dark'>Back</a>
+</form>
+-->
+</div>
+{% endfor %}
