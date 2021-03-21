@@ -2,10 +2,11 @@ from django.shortcuts import render,HttpResponseRedirect,reverse
 from .forms import PeopleForm,UserCreate,loginform,UserProfile
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
-# Create your views here.
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,JsonResponse
 from .models import People,follow,comments,hashtag
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 import json
 from random import shuffle
 import random
@@ -14,6 +15,13 @@ import cloudinary.uploader
 import cloudinary.api
 from django.contrib.auth.decorators import login_required
 from chat.views import room
+import cv2
+import os
+import numpy as np
+import pandas as pd
+from django.core.files.storage import FileSystemStorage
+import tensorflow as tf
+#from .apps import machine_model
 # Create your views here.
 def returndata(request):
     obj=People.objects.all()
@@ -48,28 +56,29 @@ def follow_data(request):
     return render(request,'index.html',objs)
 def get_follows_data(request):
     path=request.GET["path"]
-    if path=="/followsdata":
+    if path=="followsdata":
         global obj_for_ajax
         objs={'obj':obj_for_ajax[:5]}
         obj_for_ajax=obj_for_ajax[5:]
         return render(request,'add_post.html',objs)
-    elif path=="/":
+    elif path=="":
         global obj_for_ajax_discover
         objs={'obj':obj_for_ajax_discover[:2]}
         obj_for_ajax_discover=obj_for_ajax_discover[2:]
         return render(request,'add_post.html',objs)
-    elif path=="/new-dis":
+    elif path=="new-dis":
         global obj_for_ajax_discover_sug
         objs={'obj':obj_for_ajax_discover_sug[:5]}
         obj_for_ajax_discover_sug=obj_for_ajax_discover_sug[5:]
         return render(request,'new_dis_ajax.html',objs)
-    elif path=="/suggest_discover/15":
+    elif path=="suggest_discover":
         global ajax_suggest_discover
-        objs={'obj':ajax_suggest_discover[:5]}
-        ajax_suggest_discover=ajax_suggest_discover[5:]
+        objs={'obj':ajax_suggest_discover[:3]}
+        ajax_suggest_discover=ajax_suggest_discover[3:]
+        print(123)
         return render(request,'add_post.html',objs)
         
-    return JsonResponse("",safe=False)
+    return render(request,'add_post.html',{})
 @login_required
 def storingdata(request):
     username=str(request.user)
@@ -92,10 +101,68 @@ def storingdata(request):
                     h.post.add(p)
                 else:
                     h[0].post.add(p)
-                
+            #generate hashtag model
+            autorun()
             return HttpResponseRedirect(reverse('data'))
     content={'forms':form}
     return render(request,'datacollect.html',content)
+def get_relation(tags):
+    df2=pd.read_excel(os.path.join(BASE_DIR, ".", "df2.xlsx"),engine='openpyxl',index_col=0)
+    try:
+        dframe=df2.loc[tags].sort_values(ascending=False)
+        dframe=dframe.loc[dframe!=0]
+        return list(dframe.index)
+    except Exception as e:
+        return None
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def generate_hashtag(request):
+    if request.method=='POST':
+        #image classification
+        img=request.FILES['profile']
+        fs=FileSystemStorage()
+        file=fs.save(img.name,img)
+        fileurl=fs.url(file)
+        im=cv2.imread("."+fileurl)
+        im=im/255
+        os.remove("."+fileurl)
+        im=cv2.resize(im,(32,32))
+        #plt.imshow(im)
+        im=im.reshape(1,32,32,3)
+        classes=["airplane","automobiles","bird","cat","deer","dog","frog","horse","ship","truck"]
+        m=tf.keras.models.load_model("models/image.h5")
+        print(classes[np.argmax(m.predict(im))])
+        tagss=classes[np.argmax(m.predict(im))]
+        lis=get_relation(tagss)
+        if lis:
+            lis[0]="#"+lis[0]
+            l=" #".join(lis)
+        else:
+            l="#"+tagss
+        return HttpResponse(l)
+def autorun():
+    df=pd.DataFrame.from_records(hashtag.objects.all().values_list('pk','tag','post','suggest_tag'))
+    df[3]=df[3].astype('Int64')
+    #df.rename(columns={'0':'tag_id','1':'tag','2':'post_id'},inplace=True)
+    df.rename(columns={0:'tag_id',1:'tag',2:'post_id',3:'suggest_user'},inplace=True)
+    df=df.fillna(0)
+    #id=df.loc[df.tag=='ipl']
+    df=df.sort_values('post_id')
+    df=df.drop(['suggest_user'],axis=1)
+    df.drop_duplicates(inplace=True)
+    arr=df.tag.unique()
+    df2=pd.DataFrame(index=arr,columns=arr)
+    df2=df2.fillna(0)
+    i=j=k=0
+    arr=df.tag.unique()
+    df2=pd.DataFrame(index=arr,columns=arr)
+    df2=df2.fillna(0)
+    for i in df.post_id.unique():
+        for j in df.loc[df.post_id==i].tag:
+            for k in df.loc[df.post_id==i].tag:
+                df2[j][k]+=1
+    df.loc[df.post_id==20].tag
+    df2.to_excel("df2.xlsx")
 def sepcificview(request,my_id):
     obj=get_object_or_404(People,id=my_id)
     obj=[obj]
@@ -299,9 +366,9 @@ def suggest_discover(request,id):
     obj.append(post_obj[0])
     obj=obj[::-1]
     cmt_user=comments.objects.all()
-    objs={'obj':obj[:5],'cmt_user':cmt_user}
+    objs={'obj':obj[:3],'cmt_user':cmt_user}
     global ajax_suggest_discover
-    ajax_suggest_discover=obj[5:]
+    ajax_suggest_discover=obj[3:]
     return render(request,'index.html',objs)
 
 def returnall(request):

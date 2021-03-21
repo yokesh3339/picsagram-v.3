@@ -36,19 +36,25 @@ $(document).ready(function () {
             $.ajax({
                 url: href,
                 success: function (response1) {
-                    console.log(response1);
-                    if (response1['followers']) {
-                        $('*#follow' + catid).html("Unfollow").removeClass("btn btn-info").addClass("btn btn-danger");
-                        var create_a = $("<a></a>").text(response1['active_user']).attr({ "href": "../listing/" + response1['active_user'], "id": 'followers' + response1['active_user'], class: "dropdown-item alert alert-primary" });
-                        $('#followedprof').append(create_a);
-                        $('.followedprofcount').html("Followers " + response1['followers_counts_active']);
-
+                    console.log(response1,window.location.pathname);
+                    if (window.location.pathname == "/followsdata") {
+                        location.reload();
+                        console.log(123);
                     }
-
                     else {
-                        $('*#follow' + catid).html("Follow").removeClass("btn btn-danger").addClass("btn btn-info");
-                        $('#followers' + response1['active_user']).remove();
-                        $('.followedprofcount').html("Followers " + response1['followers_counts_active']);
+                        if (response1['followers']) {
+                            $('*#follow' + catid).html("Unfollow").removeClass("btn btn-info").addClass("btn btn-danger");
+                            var create_a = $("<a></a>").text(response1['active_user']).attr({ "href": "../listing/" + response1['active_user'], "id": 'followers' + response1['active_user'], class: "dropdown-item alert alert-primary" });
+                            $('#followedprof').append(create_a);
+                            $('.followedprofcount').html("Followers " + response1['followers_counts_active']);
+
+                        }
+
+                        else {
+                            $('*#follow' + catid).html("Follow").removeClass("btn btn-danger").addClass("btn btn-info");
+                            $('#followers' + response1['active_user']).remove();
+                            $('.followedprofcount').html("Followers " + response1['followers_counts_active']);
+                        }
                     }
                 }
             })
@@ -75,23 +81,23 @@ $(document).ready(function () {
                 clearAll();
             }
         }),
-/*     prev_tag = document.getElementsByClassName('');
-    cc = 0
-    $('#len').on('DOMNodeInserted', '.navv', function () {
-        tag = document.getElementsByClassName("hashtag");
-        c++;
-        if (prev_tag != tag) {
-            console.log(tag, prev_tag);
-            prev_tag = tag
-            for (let i = 0; i < tag.length; i++) {
-                console.log(i);
-                tag[i].innerHTML = hashtag(tag[i].innerText);
-            }
-            console.log("run",c);
-            $('.navv').removeClass('navv');
-            $('.hashtag').removeClass('hashtag');
-        }
-    }), */
+        /*     prev_tag = document.getElementsByClassName('');
+            cc = 0
+            $('#len').on('DOMNodeInserted', '.navv', function () {
+                tag = document.getElementsByClassName("hashtag");
+                c++;
+                if (prev_tag != tag) {
+                    console.log(tag, prev_tag);
+                    prev_tag = tag
+                    for (let i = 0; i < tag.length; i++) {
+                        console.log(i);
+                        tag[i].innerHTML = hashtag(tag[i].innerText);
+                    }
+                    console.log("run",c);
+                    $('.navv').removeClass('navv');
+                    $('.hashtag').removeClass('hashtag');
+                }
+            }), */
         $(document.body).on('click', '.addcmt', function (e) {
             e.preventDefault();
             var c_id = $(this).attr("data-catid");

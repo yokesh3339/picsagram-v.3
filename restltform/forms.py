@@ -18,6 +18,10 @@ class PeopleForm(forms.ModelForm):
       #  if not username in People.objects.get(id=1).get_username():
        #     raise forms.ValidationError("Logedin as your login or sign up")
         #return username
+class tag_form(forms.ModelForm):
+    class Meta:
+        model=People
+        fields=['profile']
 class UserCreate(forms.ModelForm):
     password=forms.CharField(widget=forms.PasswordInput(attrs={"required":True}))
     class Meta:
