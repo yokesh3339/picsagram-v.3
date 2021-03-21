@@ -42,7 +42,8 @@ from restltform.views import (
     profat,
     autocomplete,
     get_comment,
-    get_follows_data
+    get_follows_data,
+    generate_hashtag
     )
 
 urlpatterns = [
@@ -70,8 +71,8 @@ urlpatterns = [
     path('profat/<str:name>',profat,name='profat'),
     path('autocomplete',autocomplete,name="autocomplete"),
     path('get_comment',get_comment,name="get_comment"),
-    path('get_follows_data',get_follows_data,name="get_follows_data")
-    
+    path('get_follows_data',get_follows_data,name="get_follows_data"),
+    path('generate_hashtag',generate_hashtag,name="generate_hashtag")
     
 ]
 urlpatterns = urlpatterns+[

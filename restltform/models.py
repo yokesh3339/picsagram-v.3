@@ -30,7 +30,7 @@ class follow(models.Model):
         my_followers=self.followers_users.all().count()
         return my_followers
 class People(models.Model):
-    username=models.CharField(max_length=20)
+    username=models.CharField(max_length=15)
     #firstname=models.CharField(max_length=50)
     #lastname=models.CharField(max_length=50)
     users=models.ForeignKey(User,related_name="post_user",on_delete=models.CASCADE)
